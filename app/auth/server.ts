@@ -10,12 +10,16 @@ export type User = {
   username: string;
 };
 
+export async function getAnonId(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get("anon_id")?.value ?? null;
+}
+
 export async function getUser(): Promise<{
   data: User | null;
   error: Prisma.PrismaClientKnownRequestError | null;
 }> {
-  const cookieStore = await cookies();
-  const anonId = cookieStore.get("anon_id")?.value;
+  const anonId = await getAnonId();
   if (!anonId) {
     return { data: null, error: null };
   }
