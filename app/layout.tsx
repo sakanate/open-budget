@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { redirect } from "next/navigation";
 
-import { AnonIdProvider } from "./auth/anonIdProvider";
-import { getAnonId } from "./auth/server";
+import { UserProvider } from "./auth/UserProvider";
+import { getUser } from "./auth/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,10 +26,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const anonId = await getAnonId();
+  const { data, error } = await getUser();
 
-  if (!anonId) {
-    console.log("anonId not found, redirecting to signup");
+  if (error) {
+    console.error(error);
+    redirect("/signup");
+  }
+  if (!data) {
+    console.log("user not found, redirecting to signup");
     redirect("/signup");
   }
 
@@ -39,7 +43,9 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AnonIdProvider anonId={anonId}>{children}</AnonIdProvider>
+        <UserProvider anonId={data.anonId} username={data.username}>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );
