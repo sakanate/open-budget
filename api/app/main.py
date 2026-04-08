@@ -14,6 +14,14 @@ app = FastAPI()
 api_v1 = FastAPI()
 
 
+@api_v1.get("/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: uuid.UUID, db: Session = Depends(get_db)):
+    user = crud.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
 @api_v1.post("/users", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     try:

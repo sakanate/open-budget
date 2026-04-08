@@ -8,6 +8,10 @@ from .schemas.balance import BalanceCreate
 from .schemas.user import UserCreate
 
 
+def get_user_by_id(db: Session, user_id: uuid.UUID) -> User | None:
+    return db.query(User).filter(User.id == user_id).first()
+
+
 def get_balances_by_user(db: Session, user_id: uuid.UUID) -> list[Balance]:
     return db.query(Balance).filter(Balance.owner_id == user_id).all()
 
