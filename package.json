@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "api": "cd api && uv run fastapi dev"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
