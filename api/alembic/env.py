@@ -1,21 +1,13 @@
 from logging.config import fileConfig
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-from models.balance import Balance  # noqa: F401
-from models.base import Base
-from models.user import User  # noqa: F401
+from app.config import settings
 
-
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env")
-
-    DATABASE_URL: str
-
-
-settings = Settings()
+# from app.models.balance import Balance  # noqa: F401
+from app.models.base import Base
+from app.models.user import User  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
