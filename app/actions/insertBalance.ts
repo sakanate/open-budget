@@ -2,12 +2,14 @@
 
 import { z } from "zod";
 
-import { Balance } from "@/app/generated/prisma/browser";
+import type { components } from "@/lib/api/types";
 import { getAnonId } from "@/app/auth/server";
-import { prisma } from "@/lib/prisma";
+import client from "@/lib/api/client";
+
+export type BalanceResponse = components["schemas"]["BalanceResponse"];
 
 export type InsertBalanceState = {
-  data?: Balance;
+  data?: BalanceResponse;
   error: string | null;
 };
 
@@ -19,7 +21,7 @@ export async function insertBalance(
     .object({
       category: z.string(),
       description: z.string(),
-      amount: z.number(),
+      amount: z.coerce.number(),
     })
     .safeParse({
       category: payload.get("category"),
@@ -39,18 +41,19 @@ export async function insertBalance(
       error: "Unauthorized",
     };
   }
+
   const { category, description, amount } = formSchema.data;
-  const balance = await prisma.balance.create({
-    data: {
-      owner_id: anonId,
-      category,
-      description,
-      amount,
-    },
+  const { data, error } = await client.POST("/users/{user_id}/balances", {
+    params: { path: { user_id: anonId } },
+    body: { category, description, amount },
   });
 
+  if (error || !data) {
+    return { error: "残高の追加に失敗しました" };
+  }
+
   return {
-    data: balance,
+    data,
     error: null,
   };
 }

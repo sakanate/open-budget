@@ -3,18 +3,18 @@
 import { useState, useActionState, useEffect } from "react";
 import Link from "next/link";
 
-import type { Balance } from "@/app/generated/prisma/browser";
 import {
   insertBalance,
+  type BalanceResponse,
   type InsertBalanceState,
 } from "@/app/actions/insertBalance";
 import { useUser } from "@/app/auth/UserProvider";
 
-export default function Dashboard({ initBalance }: { initBalance: Balance[] }) {
+export default function Dashboard({ initBalance }: { initBalance: BalanceResponse[] }) {
   const { username } = useUser();
   const [balance, setBalance] = useState(initBalance);
 
-  const handleAddBalance = (item: Balance) => {
+  const handleAddBalance = (item: BalanceResponse) => {
     setBalance((prev) => [item, ...prev]);
   };
 
@@ -42,7 +42,7 @@ function SearchBar() {
   );
 }
 
-function BudgetList({ balance }: { balance: Balance[] }) {
+function BudgetList({ balance }: { balance: BalanceResponse[] }) {
   return (
     <div>
       {balance.length === 0 && <p>データがありません</p>}
@@ -57,7 +57,7 @@ function BudgetList({ balance }: { balance: Balance[] }) {
   );
 }
 
-function AddBalanceForm({ onSubmit }: { onSubmit?: (item: Balance) => void }) {
+function AddBalanceForm({ onSubmit }: { onSubmit?: (item: BalanceResponse) => void }) {
   const [state, formAction] = useActionState(insertBalance, {
     error: null,
   } as InsertBalanceState);

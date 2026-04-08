@@ -3,6 +3,8 @@
 import { cookies } from "next/headers";
 import { z } from "zod";
 
+import client from "@/lib/api/client";
+
 export type RegisterUserState = {
   data?: {
     username: string;
@@ -27,19 +29,22 @@ export async function registerUser(
     return { error: result.error.issues.join(", ") };
   }
 
-  // TODO: dbにユーザーを作成し、そのIDをcookieに設定する
+  const { data, error } = await client.POST("/users", {
+    body: { username: result.data.username },
+  });
 
-  const anonId = crypto.randomUUID();
+  if (error) {
+    const detail = (error as { detail?: string }).detail;
+    return { error: detail ?? "ユーザーの作成に失敗しました" };
+  }
+
   const cookieStore = await cookies();
-  cookieStore.set("anon_id", anonId, {
+  cookieStore.set("anon_id", data.id, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 90,
   });
-  console.log(
-    `registered new user (username=${result.data.username}, anonId=${anonId})`,
-  );
 
-  return { data: { username: result.data.username, anonId }, error: null };
+  return { data: { username: data.username, anonId: data.id }, error: null };
 }

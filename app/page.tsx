@@ -1,17 +1,18 @@
 import Dashboard from "@/app/components/Dashboard";
 import { getUser } from "@/app/auth/server";
-import { prisma } from "@/lib/prisma";
+import client from "@/lib/api/client";
 
 export default async function Page() {
   const { data: user } = await getUser();
-  const balance = await prisma.balance.findMany({
-    where: { owner_id: user?.anonId },
-    orderBy: { created_at: "desc" },
-  });
+  const { data: balance } = user
+    ? await client.GET("/users/{user_id}/balances", {
+        params: { path: { user_id: user.anonId } },
+      })
+    : { data: [] };
 
   return (
     <main>
-      <Dashboard initBalance={balance} />
+      <Dashboard initBalance={balance ?? []} />
     </main>
   );
 }

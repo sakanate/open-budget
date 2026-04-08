@@ -2,8 +2,7 @@
 
 import { cookies } from "next/headers";
 
-import { Prisma } from "@/app/generated/prisma/client";
-import { prisma } from "@/lib/prisma";
+import client from "@/lib/api/client";
 
 export type User = {
   anonId: string;
@@ -17,7 +16,7 @@ export async function getAnonId(): Promise<string | null> {
 
 export async function getUser(): Promise<{
   data: User | null;
-  error: Prisma.PrismaClientKnownRequestError | null;
+  error: Error | null;
 }> {
   const anonId = await getAnonId();
   if (!anonId) {
@@ -25,17 +24,19 @@ export async function getUser(): Promise<{
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { id: anonId } });
-    if (!user) {
+    const { data, error } = await client.GET("/users/{user_id}", {
+      params: { path: { user_id: anonId } },
+    });
+
+    if (error || !data) {
       return { data: null, error: null };
     }
 
-    return { data: { anonId, username: user.username }, error: null };
+    return { data: { anonId, username: data.username }, error: null };
   } catch (error) {
     return {
       data: null,
-      error:
-        error instanceof Prisma.PrismaClientKnownRequestError ? error : null,
+      error: error instanceof Error ? error : null,
     };
   }
 }
