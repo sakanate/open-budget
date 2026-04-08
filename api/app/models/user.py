@@ -17,5 +17,5 @@ class User(Base):
     username: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now(UTC)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
