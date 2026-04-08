@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -8,7 +9,7 @@ class BalanceCreate(BaseModel):
     category: str
     description: str
     amount: int
-    story: str
+    story: Optional[str] = None
 
 
 class BalanceResponse(BaseModel):
