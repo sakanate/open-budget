@@ -11,8 +11,6 @@
     "gen:api-types": "openapi-typescript http://localhost:8000/v1/openapi.json -o lib/api/types.ts"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.6.0",
-    "@prisma/client": "^7.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.1",
@@ -37,7 +35,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
     "openapi-typescript": "^7.13.0",
-    "prisma": "^7.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
