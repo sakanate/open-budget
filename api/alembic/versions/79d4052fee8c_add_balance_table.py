@@ -1,8 +1,8 @@
-"""create balance table
+"""add balance table
 
-Revision ID: 2c74b479d726
-Revises: b05a1132b3d3
-Create Date: 2026-04-08 14:18:27.630979
+Revision ID: 79d4052fee8c
+Revises: 1295b6e17a5d
+Create Date: 2026-04-09 09:15:19.802074
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '2c74b479d726'
-down_revision: Union[str, Sequence[str], None] = 'b05a1132b3d3'
+revision: str = '79d4052fee8c'
+down_revision: Union[str, Sequence[str], None] = '1295b6e17a5d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('category', sa.Text(), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
     sa.Column('amount', sa.Integer(), nullable=False),
-    sa.Column('story', sa.Text(), nullable=False),
+    sa.Column('story', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

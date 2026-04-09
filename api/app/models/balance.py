@@ -1,5 +1,6 @@
 import uuid
 from datetime import UTC, datetime
+from typing import Optional
 
 from sqlalchemy import DateTime, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID
@@ -21,7 +22,7 @@ class Balance(Base):
     category: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     amount: Mapped[int] = mapped_column(nullable=False)
-    story: Mapped[str] = mapped_column(Text, nullable=False)
+    story: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now(UTC)

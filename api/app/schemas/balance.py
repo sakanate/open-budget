@@ -20,5 +20,5 @@ class BalanceResponse(BaseModel):
     category: str
     description: str
     amount: int
-    story: str
+    story: Optional[str] = None
     created_at: datetime
