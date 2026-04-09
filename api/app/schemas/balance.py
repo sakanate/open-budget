@@ -12,6 +12,13 @@ class BalanceCreate(BaseModel):
     story: Optional[str] = None
 
 
+class BalanceUpdate(BaseModel):
+    category: Optional[str] = None
+    description: Optional[str] = None
+    amount: Optional[int] = None
+    story: Optional[str] = None
+
+
 class BalanceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

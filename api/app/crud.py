@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from .models.balance import Balance
 from .models.user import User
-from .schemas.balance import BalanceCreate
+from .schemas.balance import BalanceCreate, BalanceUpdate
 from .schemas.user import UserCreate
 
 
@@ -23,6 +23,17 @@ def delete_balance(db: Session, balance_id: uuid.UUID) -> bool:
     db.delete(db_balance)
     db.commit()
     return True
+
+
+def update_balance(db: Session, balance_id: uuid.UUID, balance: BalanceUpdate) -> Balance | None:
+    db_balance = db.query(Balance).filter(Balance.id == balance_id).first()
+    if db_balance is None:
+        return None
+    for field, value in balance.model_dump(exclude_unset=True).items():
+        setattr(db_balance, field, value)
+    db.commit()
+    db.refresh(db_balance)
+    return db_balance
 
 
 def create_balance(db: Session, user_id: uuid.UUID, balance: BalanceCreate) -> Balance:

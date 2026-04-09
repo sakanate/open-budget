@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from . import crud
 from .database import get_db
-from .schemas.balance import BalanceCreate, BalanceResponse
+from .schemas.balance import BalanceCreate, BalanceResponse, BalanceUpdate
 from .schemas.user import UserCreate, UserResponse
 
 app = FastAPI()
@@ -41,6 +41,16 @@ def create_balance(
     user_id: uuid.UUID, balance: BalanceCreate, db: Session = Depends(get_db)
 ):
     return crud.create_balance(db, user_id, balance)
+
+
+@api_v1.patch("/users/{user_id}/balances/{balance_id}", response_model=BalanceResponse)
+def update_balance(
+    user_id: uuid.UUID, balance_id: uuid.UUID, balance: BalanceUpdate, db: Session = Depends(get_db)
+):
+    updated = crud.update_balance(db, balance_id, balance)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Balance not found")
+    return updated
 
 
 @api_v1.delete("/users/{user_id}/balances/{balance_id}", status_code=204)
