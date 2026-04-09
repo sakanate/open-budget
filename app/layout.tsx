@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { redirect } from "next/navigation";
 
 import { UserProvider } from "./auth/UserProvider";
 import { getUser } from "./auth/server";
@@ -26,16 +25,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data, error } = await getUser();
-
-  if (error) {
-    console.error(error);
-    redirect("/signup");
-  }
-  if (!data) {
-    console.log("user not found, redirecting to signup");
-    redirect("/signup");
-  }
+  const { data } = await getUser();
 
   return (
     <html
@@ -43,7 +33,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <UserProvider anonId={data.anonId} username={data.username}>
+        <UserProvider anonId={data?.anonId} username={data?.username}>
           {children}
         </UserProvider>
       </body>

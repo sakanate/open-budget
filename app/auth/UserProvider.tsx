@@ -15,11 +15,13 @@ export function UserProvider({
   username,
 }: {
   children: React.ReactNode;
-  anonId: string | null;
-  username: string | null;
+  anonId: string | null | undefined;
+  username: string | null | undefined;
 }) {
   return (
-    <UserContext.Provider value={{ anonId, username }}>
+    <UserContext.Provider
+      value={{ anonId: anonId ?? null, username: username ?? null }}
+    >
       {children}
     </UserContext.Provider>
   );
